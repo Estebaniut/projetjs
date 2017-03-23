@@ -35,8 +35,10 @@ function supprimer_recherche(e)
 function selectionner_recherche(e)
 {
 		valeur = $(e).text();
+		console.log(valeur);
 		$zone_saisie.val(valeur);
 		recherche_courante = valeur;
+		console.log($.cookie(recherche_courante));
 }
 
 
@@ -80,11 +82,39 @@ function recherche_nouvelles()
 
 function sauve_news(e)
 {
-	$(e).children('img').attr("src","disk15.jpg");
+	$(e).children('img').attr("src","disk15.jpg");	//Change l'image de l'horloge par une disquette
+	$(e).attr("onclick", "supprime_news(this)");	//Change l'attribut onclick
+
+	//Récupération du titre, de la date et de l'url de la recherche
+	titre = $(e).parent().children(".titre_news").text();
+	date = $(e).parent().children(".date_news").text();
+	url = $(e).parent().children(".titre_news").attr("href");
+
+	//Création d'un objet
+	$object = {titre, date, url};
+	if (indexOf(recherche_courante_news, $object)==-1) {
+		recherche_courante_news.push($object);
+	}
+	console.log(recherche_courante_news);
+	$.cookie(recherche_courante,JSON.stringify(recherche_courante_news));
 }
 
 
 function supprime_news(e)
 {
+	$(e).children('img').attr("src","horloge15.jpg");	//Change l'image de l'horloge par une disquette
+	$(e).attr("onclick", "sauve_news(this)");	//Change l'attribut onclick
 
+	//Récupération du titre, de la date et de l'url de la recherche
+	titre = $(e).parent().children(".titre_news").text();
+	date = $(e).parent().children(".date_news").text();
+	url = $(e).parent().children(".titre_news").attr("href");
+
+	//Création d'un objet
+	$object = {titre, date, url};
+	if (indexOf(recherche_courante_news, $object)!=-1) {
+		recherche_courante_news.splice(recherche_courante_news.indexOf($object),1);
+	}
+	console.log(recherche_courante_news);
+	$.cookie(recherche_courante,JSON.stringify(recherche_courante_news));
 }
