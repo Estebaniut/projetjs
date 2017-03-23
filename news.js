@@ -17,7 +17,7 @@ function ajouter_recherche()
 	// 			myObj=myObj+'{"id":"'+i+'","val":"'+recherches[i]+'"},';
 	// 	}
 	// 	myObj+='{"id":"'+recherches.length-1+'","val":"'+recherches[recherches.length-1]+'"}]}';
-	// 	$.cookie.json = true;
+	// 	$.cookie.json = true;hh
 	$.cookie("recherches",JSON.stringify(recherches));
 	alert($.cookie("recherches"));
 }
