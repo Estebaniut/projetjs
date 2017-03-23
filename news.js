@@ -58,8 +58,8 @@ function init()
 
 function recherche_nouvelles()
 {
-	$("#resultats").children().each(function(){	//Suppression de toutes les divs de #resultats
-		this.remove;
+	$("#resultats").children('p').each(function(){	//Suppression de toutes les divs de #resultats
+		this.remove();
 	})
 	$("#wait").attr("display", "block");
 	// Appel ajax de type GET avec le paramètre data ayant la valeur correspondant au contenu de la zone de saisie et avec une callback nommée maj_resultats
@@ -80,7 +80,7 @@ function recherche_nouvelles()
 
 function sauve_news(e)
 {
-
+	$(e).children('img').attr("src","disk15.jpg");
 }
 
 
