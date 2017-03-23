@@ -17,7 +17,7 @@ function ajouter_recherche()
 	// 			myObj=myObj+'{"id":"'+i+'","val":"'+recherches[i]+'"},';
 	// 	}
 	// 	myObj+='{"id":"'+recherches.length-1+'","val":"'+recherches[recherches.length-1]+'"}]}';
-	// 	$.cookie.json = true;hh
+	// 	$.cookie.json = true;
 	$.cookie("recherches",JSON.stringify(recherches));
 	alert($.cookie("recherches"));
 }
@@ -64,17 +64,17 @@ function recherche_nouvelles()
 	$("#wait").attr("display", "block");
 	// Appel ajax de type GET avec le paramètre data ayant la valeur correspondant au contenu de la zone de saisie et avec une callback nommée maj_resultats
 	resultat = $.get("search.php",
-	{
-		data: $zone_saisie.val()
-	},
-	maj_resultats());
-	console.log(resultat);
-}
-
-
-function maj_resultats(res)
-{
-	$("#wait").attr("display", "none");
+								{
+									data: $zone_saisie.val()
+								},
+								function maj_resultats(res){
+									$("#wait").attr("display", "none");
+									$res = $.parseJSON(res);
+									for (var i = 0; i < $res.length; i++) {
+										var new_result = $('<p class="titre_result"><a class="titre_news" href="'+$res[i].url+'" target="_blank"> '+$res[i].titre+' </a><span class="date_news">'+$res[i].date+'</span><span class="action_news" onclick="sauve_news(this)"><img src="horloge15.jpg"/></span></p>');
+										$("#resultats").append(new_result);
+									}
+								});
 }
 
 
