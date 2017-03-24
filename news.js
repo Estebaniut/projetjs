@@ -12,14 +12,7 @@ function ajouter_recherche()
 			$("#recherches-stockees label").attr("onClick","selectionner_recherche(this)");
 			$("#recherches-stockees img").attr("onClick","supprimer_recherche(this)");
 	}
-	// myObj= '{"recherches":['
-	// 	for (var i = 0; i < recherches.length-1; i++) {
-	// 			myObj=myObj+'{"id":"'+i+'","val":"'+recherches[i]+'"},';
-	// 	}
-	// 	myObj+='{"id":"'+recherches.length-1+'","val":"'+recherches[recherches.length-1]+'"}]}';
-	// 	$.cookie.json = true;
 	$.cookie("recherches",JSON.stringify(recherches));
-	alert($.cookie("recherches"));
 }
 
 function supprimer_recherche(e)
@@ -28,17 +21,22 @@ function supprimer_recherche(e)
 	recherches.splice(recherches.indexOf($parent.children("label").text()),1);
 	$parent.remove();
 	$.cookie("recherches",JSON.stringify(recherches));
-	alert($.cookie("recherches"));
 }
 
 
 function selectionner_recherche(e)
 {
 		valeur = $(e).text();
-		console.log(valeur);
 		$zone_saisie.val(valeur);
 		recherche_courante = valeur;
-		console.log($.cookie(recherche_courante));
+		recherche_courante_news = JSON.parse($.cookie(recherche_courante));
+		$("#resultats").children('p').each(function(){	//Suppression de toutes les divs de #resultats
+			this.remove();
+		})
+		for (var i = 0; i < recherche_courante_news.length; i++) {
+			var content_recherche = $('<p class="titre_result"><a class="titre_news" href="'+recherche_courante_news[i].url+'" target="_blank">'+recherche_courante_news[i].titre+'</a><span class="date_news">'+format(recherche_courante_news[i].date)+'</span><span class="action_news" onclick="supprime_news(this)"><img src="disk15.jpg"/></span></p>');
+			$("#resultats").append(content_recherche);
+		}
 }
 
 
@@ -54,12 +52,18 @@ function init()
 			$("#recherches-stockees label").attr("onClick","selectionner_recherche(this)");
 			$("#recherches-stockees img").attr("onClick","supprimer_recherche(this)");
 		}
+		$("#zone_saisie").keypress(function(e){
+			if(e.which == 13){//Enter key pressed
+				recherche_nouvelles();//Appel de la fonction recherche_nouvelles
+			}
+		});
 	}
 }
 
 
 function recherche_nouvelles()
 {
+	recherche_courante = $zone_saisie.val();
 	$("#resultats").children('p').each(function(){	//Suppression de toutes les divs de #resultats
 		this.remove();
 	})
@@ -73,10 +77,17 @@ function recherche_nouvelles()
 									$("#wait").css("display", "none");
 									$res = $.parseJSON(res);
 									for (var i = 0; i < $res.length; i++) {
-										var new_result = $('<p class="titre_result"><a class="titre_news" href="'+$res[i].url+'" target="_blank"> '+$res[i].titre+' </a><span class="date_news">'+$res[i].date+'</span><span class="action_news" onclick="sauve_news(this)"><img src="horloge15.jpg"/></span></p>');
+										if (indexOf(recherche_courante_news, $res[i])!=-1) {
+											var new_result = $('<p class="titre_result"><a class="titre_news" href="'+$res[i].url+'" target="_blank">'+$res[i].titre+'</a><span class="date_news">'+format($res[i].date)+'</span><span class="action_news" onclick="supprime_news(this)"><img src="disk15.jpg"/></span></p>');
+										}else{
+											var new_result = $('<p class="titre_result"><a class="titre_news" href="'+$res[i].url+'" target="_blank">'+$res[i].titre+'</a><span class="date_news">'+format($res[i].date)+'</span><span class="action_news" onclick="sauve_news(this)"><img src="horloge15.jpg"/></span></p>');
+										}
 										$("#resultats").append(new_result);
 									}
 								});
+		if (!!$.cookie(recherche_courante)) {
+			recherche_courante_news = JSON.parse($.cookie(recherche_courante));
+		}
 }
 
 
@@ -95,8 +106,7 @@ function sauve_news(e)
 	if (indexOf(recherche_courante_news, $object)==-1) {
 		recherche_courante_news.push($object);
 	}
-	console.log(recherche_courante_news);
-	$.cookie(recherche_courante,JSON.stringify(recherche_courante_news));
+	$.cookie(recherche_courante,JSON.stringify(recherche_courante_news), {expires : 1000});
 }
 
 
@@ -113,8 +123,7 @@ function supprime_news(e)
 	//Création d'un objet
 	$object = {titre, date, url};
 	if (indexOf(recherche_courante_news, $object)!=-1) {
-		recherche_courante_news.splice(recherche_courante_news.indexOf($object),1);
+		recherche_courante_news.splice(indexOf(recherche_courante_news,$object),1);
 	}
-	console.log(recherche_courante_news);
-	$.cookie(recherche_courante,JSON.stringify(recherche_courante_news));
+	$.cookie(recherche_courante,JSON.stringify(recherche_courante_news),{expires : 1000});
 }
