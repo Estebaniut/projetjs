@@ -63,14 +63,14 @@ function recherche_nouvelles()
 	$("#resultats").children('p').each(function(){	//Suppression de toutes les divs de #resultats
 		this.remove();
 	})
-	$("#wait").attr("display", "block");
+	$("#wait").css("display", "block");
 	// Appel ajax de type GET avec le paramètre data ayant la valeur correspondant au contenu de la zone de saisie et avec une callback nommée maj_resultats
 	resultat = $.get("search.php",
 								{
 									data: $zone_saisie.val()
 								},
 								function maj_resultats(res){
-									$("#wait").attr("display", "none");
+									$("#wait").css("display", "none");
 									$res = $.parseJSON(res);
 									for (var i = 0; i < $res.length; i++) {
 										var new_result = $('<p class="titre_result"><a class="titre_news" href="'+$res[i].url+'" target="_blank"> '+$res[i].titre+' </a><span class="date_news">'+$res[i].date+'</span><span class="action_news" onclick="sauve_news(this)"><img src="horloge15.jpg"/></span></p>');
