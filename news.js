@@ -2,6 +2,7 @@ var recherches=[];//tableau contenant des chaines de caracteres correspondant au
 var recherche_courante;// chaine de caracteres correspondant a la recherche courante
 var $zone_saisie = $("#zone_saisie");
 var recherche_courante_news=[]; // tableau d'objets de type resultats (avec titre, date et url)
+var autocompletion=[];//tableau contenant des chaines de caracteres correspondant à toutes les recherches faites
 
 function ajouter_recherche()
 {
@@ -29,6 +30,7 @@ function selectionner_recherche(e)
 		valeur = $(e).text();
 		$zone_saisie.val(valeur);
 		recherche_courante = valeur;
+		recherche_courante_news = [];
 		recherche_courante_news = JSON.parse($.cookie(recherche_courante));
 		$("#resultats").children('p').each(function(){	//Suppression de toutes les divs de #resultats
 			this.remove();
@@ -52,18 +54,35 @@ function init()
 			$("#recherches-stockees label").attr("onClick","selectionner_recherche(this)");
 			$("#recherches-stockees img").attr("onClick","supprimer_recherche(this)");
 		}
-		$("#zone_saisie").keypress(function(e){
-			if(e.which == 13){//Enter key pressed
-				recherche_nouvelles();//Appel de la fonction recherche_nouvelles
-			}
+	}
+	$("#zone_saisie").keypress(function(e){
+		if(e.which == 13){//Enter key pressed
+			console.log("Entrée");
+			recherche_nouvelles();//Appel de la fonction recherche_nouvelles
+		}
+	});
+	$(function(){
+		$("#zone_saisie").autocomplete({
+			source: autocompletion
 		});
+	});
+
+	if (!!$.cookie("autocompletion")) {
+		$tableau = $.cookie("autocompletion").split(",");
+		for (var i = 0; i < $tableau.length; i++) {
+			autocompletion.push($tableau[i]);
+		}
 	}
 }
 
 
 function recherche_nouvelles()
 {
+	recherche_courante_news = [];
 	recherche_courante = $zone_saisie.val();
+	autocompletion.push(recherche_courante);
+	$.cookie("autocompletion", autocompletion);
+
 	if (!!$.cookie(recherche_courante)) {
 		recherche_courante_news = JSON.parse($.cookie(recherche_courante));
 		console.log(recherche_courante_news);
