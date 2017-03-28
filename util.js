@@ -13,7 +13,7 @@ function twodigits(v)
 
 
 function format(cdate)
-{	
+{
 		var date = new Date(cdate);
         var day = twodigits(date.getDate());
         var month = twodigits(date.getMonth() + 1);
@@ -23,7 +23,7 @@ function format(cdate)
 		return(" "+day+"/"+month+" "+hours+"h"+minutes);
 }
 
-function decodeEntities(encodedString) 
+function decodeEntities(encodedString)
 {
     var textArea = document.createElement('textarea');
     textArea.innerHTML = encodedString;
@@ -36,9 +36,11 @@ function indexOf(t,o)
 		var limit = t.length;
 		var trouve=false;
 		var i=0;
-		while( (!trouve) && (i<limit)) 
+		while( (!trouve) && (i<limit))
 		{
 			var c=recherche_courante_news[i];
+      console.log(c.date);
+      console.log(o.date);
 			if ((c.titre == o.titre) && (c.date==o.date))
 			{
 				trouve=true;

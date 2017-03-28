@@ -34,7 +34,7 @@ function selectionner_recherche(e)
 			this.remove();
 		})
 		for (var i = 0; i < recherche_courante_news.length; i++) {
-			var content_recherche = $('<p class="titre_result"><a class="titre_news" href="'+recherche_courante_news[i].url+'" target="_blank">'+recherche_courante_news[i].titre+'</a><span class="date_news">'+format(recherche_courante_news[i].date)+'</span><span class="action_news" onclick="supprime_news(this)"><img src="disk15.jpg"/></span></p>');
+			var content_recherche = $('<p class="titre_result"><a class="titre_news" href="'+recherche_courante_news[i].url+'" target="_blank">'+recherche_courante_news[i].titre+'</a><span class="date_news">'+recherche_courante_news[i].date+'</span><span class="action_news" onclick="supprime_news(this)"><img src="disk15.jpg"/></span></p>');
 			$("#resultats").append(content_recherche);
 		}
 }
@@ -64,9 +64,13 @@ function init()
 function recherche_nouvelles()
 {
 	recherche_courante = $zone_saisie.val();
+	if (!!$.cookie(recherche_courante)) {
+		recherche_courante_news = JSON.parse($.cookie(recherche_courante));
+		console.log(recherche_courante_news);
+	}
 	$("#resultats").children('p').each(function(){	//Suppression de toutes les divs de #resultats
 		this.remove();
-	})
+	});
 	$("#wait").css("display", "block");
 	// Appel ajax de type GET avec le paramètre data ayant la valeur correspondant au contenu de la zone de saisie et avec une callback nommée maj_resultats
 	resultat = $.get("search.php",
@@ -77,17 +81,15 @@ function recherche_nouvelles()
 									$("#wait").css("display", "none");
 									$res = $.parseJSON(res);
 									for (var i = 0; i < $res.length; i++) {
+										$res[i].date = format($res[i].date);
 										if (indexOf(recherche_courante_news, $res[i])!=-1) {
-											var new_result = $('<p class="titre_result"><a class="titre_news" href="'+$res[i].url+'" target="_blank">'+$res[i].titre+'</a><span class="date_news">'+format($res[i].date)+'</span><span class="action_news" onclick="supprime_news(this)"><img src="disk15.jpg"/></span></p>');
+											var new_result = $('<p class="titre_result"><a class="titre_news" href="'+$res[i].url+'" target="_blank">'+$res[i].titre+'</a><span class="date_news">'+$res[i].date+'</span><span class="action_news" onclick="supprime_news(this)"><img src="disk15.jpg"/></span></p>');
 										}else{
-											var new_result = $('<p class="titre_result"><a class="titre_news" href="'+$res[i].url+'" target="_blank">'+$res[i].titre+'</a><span class="date_news">'+format($res[i].date)+'</span><span class="action_news" onclick="sauve_news(this)"><img src="horloge15.jpg"/></span></p>');
+											var new_result = $('<p class="titre_result"><a class="titre_news" href="'+$res[i].url+'" target="_blank">'+$res[i].titre+'</a><span class="date_news">'+$res[i].date+'</span><span class="action_news" onclick="sauve_news(this)"><img src="horloge15.jpg"/></span></p>');
 										}
 										$("#resultats").append(new_result);
 									}
 								});
-		if (!!$.cookie(recherche_courante)) {
-			recherche_courante_news = JSON.parse($.cookie(recherche_courante));
-		}
 }
 
 
