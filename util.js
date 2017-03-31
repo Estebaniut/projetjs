@@ -39,8 +39,6 @@ function indexOf(t,o)
 		while( (!trouve) && (i<limit))
 		{
 			var c=recherche_courante_news[i];
-      console.log(c.date);
-      console.log(o.date);
 			if ((c.titre == o.titre) && (c.date==o.date))
 			{
 				trouve=true;

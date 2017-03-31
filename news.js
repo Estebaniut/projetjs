@@ -13,7 +13,8 @@ function ajouter_recherche()
 			$("#recherches-stockees label").attr("onClick","selectionner_recherche(this)");
 			$("#recherches-stockees img").attr("onClick","supprimer_recherche(this)");
 	}
-	$.cookie("recherches",JSON.stringify(recherches));
+	localStorage.setItem("recherches",JSON.stringify(recherches));
+	// $.cookie("recherches",JSON.stringify(recherches));
 }
 
 function supprimer_recherche(e)
@@ -21,7 +22,8 @@ function supprimer_recherche(e)
 	$parent = $(e).parent();
 	recherches.splice(recherches.indexOf($parent.children("label").text()),1);
 	$parent.remove();
-	$.cookie("recherches",JSON.stringify(recherches));
+	localStorage.setItem("recherches",JSON.stringify(recherches));
+	// $.cookie("recherches",JSON.stringify(recherches));
 }
 
 
@@ -31,7 +33,8 @@ function selectionner_recherche(e)
 		$zone_saisie.val(valeur);
 		recherche_courante = valeur;
 		recherche_courante_news = [];
-		recherche_courante_news = JSON.parse($.cookie(recherche_courante));
+		recherche_courante_news = JSON.parse(localStorage.getItem(recherche_courante));
+		// recherche_courante_news = JSON.parse($.cookie(recherche_courante));
 		$("#resultats").children('p').each(function(){	//Suppression de toutes les divs de #resultats
 			this.remove();
 		})
@@ -44,9 +47,16 @@ function selectionner_recherche(e)
 
 function init()
 {
+	localStorage.clear();
 	// Si un cookie "recherches" existe alors on initialise recherches avec le contenu du cookie
-	if (!!$.cookie("recherches")) {
-		var $content_cookie = JSON.parse($.cookie("recherches"));	//Array du contenu du cookie
+	// if (!!$.cookie("recherches")) {
+	$( function() {
+		$( "#recherches-stockees" ).sortable();
+		$( "#recherches-stockees" ).disableSelection();
+	} );
+	if(!!localStorage.getItem("recherches")){
+		var $content_cookie = JSON.parse(localStorage.getItem("recherches"));	//Array du contenu du cookie
+		// var $content_cookie = JSON.parse($.cookie("recherches"));	//Array du contenu du cookie
 		for (var i = 0; i < $content_cookie.length; i++) {	//Ajout du contenu
 			recherches.push($content_cookie[i]);
 			var new_recherche = $('<p class="titre-recherche"><label>'+recherches[i]+'</label><img src="croix30.jpg" class="icone-croix"/> </p>');
@@ -67,8 +77,9 @@ function init()
 		});
 	});
 
-	if (!!$.cookie("autocompletion")) {
-		$tableau = $.cookie("autocompletion").split(",");
+	// if (!!$.cookie("autocompletion")) {
+	if (!!localStorage.getItem("autocompletion")) {
+		$tableau = localStorage.getItem("autocompletion").split(",");
 		for (var i = 0; i < $tableau.length; i++) {
 			autocompletion.push($tableau[i]);
 		}
@@ -81,10 +92,13 @@ function recherche_nouvelles()
 	recherche_courante_news = [];
 	recherche_courante = $zone_saisie.val();
 	autocompletion.push(recherche_courante);
-	$.cookie("autocompletion", autocompletion);
+	localStorage.setItem("autocompletion",autocompletion);
+	// $.cookie("autocompletion", autocompletion);
 
-	if (!!$.cookie(recherche_courante)) {
-		recherche_courante_news = JSON.parse($.cookie(recherche_courante));
+	// if (!!$.cookie(recherche_courante)) {
+	if (localStorage.getItem(recherche_courante)!= null) {
+		// recherche_courante_news = JSON.parse($.cookie(recherche_courante));
+		recherche_courante_news = JSON.parse(localStorage.getItem(recherche_courante));
 		console.log(recherche_courante_news);
 	}
 	$("#resultats").children('p').each(function(){	//Suppression de toutes les divs de #resultats
@@ -127,7 +141,8 @@ function sauve_news(e)
 	if (indexOf(recherche_courante_news, $object)==-1) {
 		recherche_courante_news.push($object);
 	}
-	$.cookie(recherche_courante,JSON.stringify(recherche_courante_news), {expires : 1000});
+	localStorage.setItem(recherche_courante,JSON.stringify(recherche_courante_news));
+	// $.cookie(recherche_courante,JSON.stringify(recherche_courante_news), {expires : 1000});
 }
 
 
@@ -146,5 +161,6 @@ function supprime_news(e)
 	if (indexOf(recherche_courante_news, $object)!=-1) {
 		recherche_courante_news.splice(indexOf(recherche_courante_news,$object),1);
 	}
-	$.cookie(recherche_courante,JSON.stringify(recherche_courante_news),{expires : 1000});
+	localStorage.setItem(recherche_courante,JSON.stringify(recherche_courante_news));
+	// $.cookie(recherche_courante,JSON.stringify(recherche_courante_news),{expires : 1000});
 }
